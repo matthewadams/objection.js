@@ -17,7 +17,11 @@ const { jsonEquals, uniqBy } = require('../../lib/utils/objectUtils');
 describe('utils', () => {
   describe('mixin', () => {
     it('should mixin rest of the arguments to the first argument', () => {
-      class X {}
+      class X {
+        g() {
+          return 'x';
+        }
+      }
 
       const m1 = (C) =>
         class extends C {
@@ -33,10 +37,18 @@ describe('utils', () => {
           }
         };
 
-      const Y = mixin(X, m1, m2);
+      const m3 = (C) =>
+        class extends C {
+          g() {
+            return 'g';
+          }
+        };
+
+      const Y = mixin(X, m1, m2, m3);
       const y = new Y();
 
       expect(y.f()).to.equal(2);
+      expect(y.g()).to.equal('x');
 
       if (process.version >= 'v8.0.0') {
         expect(Y.name).to.equal('X');
